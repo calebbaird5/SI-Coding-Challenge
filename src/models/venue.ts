@@ -1,19 +1,11 @@
 
-import { Model, NonAttribute, Optional, Association } from 'sequelize';
+import { Model, InferAttributes, InferCreationAttributes, CreationOptional, Association, NonAttribute } from 'sequelize';
 import { DataType } from 'sequelize-typescript';
 import { sequelize } from '../sequelize';
 import { Event } from './event';
 
-export type VenueAttributes = {
-  id: number;
-  name: string;
-  address: string;
-}
-
-export type VenueCreationAttributes = Optional<VenueAttributes, 'id'>;
-
-export class Venue extends Model<VenueAttributes, VenueCreationAttributes> {
-  declare id: number;
+export class Venue extends Model<InferAttributes<Venue>, InferCreationAttributes<Venue>> {
+  declare id: CreationOptional<number>;
   declare name: string;
   declare address: string;
 

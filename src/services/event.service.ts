@@ -1,9 +1,10 @@
 import { Request } from 'express';
-import { Event, EventAttributes } from '../models/event';
+import { Event } from '../models/event';
 import { badRequest } from '../lib/utils';
+import { InferAttributes } from 'sequelize';
 
 export async function createEvent(req: Request): Promise<Event> {
-  let { name, event_date, venue_id }: EventAttributes = req.body;
+  let { name, event_date, venue_id }: InferAttributes<Event> = req.body;
   if (!name || !event_date || !venue_id) throw badRequest('Malformed Body');
   return await Event.create({ name, event_date, venue_id });
 }
@@ -19,7 +20,7 @@ export async function getEvents(): Promise<Event[]> {
 
 export async function updateEvent(req: Request): Promise<Event | null> {
   if (!req.params.id) throw badRequest('Missing Required param `id`');
-  let body: Partial<EventAttributes> = req.body;
+  let body: Partial<InferAttributes<Event>> = req.body;
   await Event.update(body, { where: { id: req.params.id } });
   return await Event.findOne({ where: { id: req.params.id } });
 }

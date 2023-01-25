@@ -1,9 +1,10 @@
 import { Request } from 'express';
-import { Venue, VenueAttributes } from '../models/venue';
+import { Venue } from '../models/venue';
 import { badRequest } from '../lib/utils';
+import { InferAttributes } from 'sequelize';
 
 export async function createVenue(req: Request): Promise<Venue> {
-  let { name, address }: VenueAttributes = req.body;
+  let { name, address }: InferAttributes<Venue> = req.body;
   if (!name || !address) throw badRequest('Malformed Body');
   return await Venue.create({ name, address });
 }
@@ -19,7 +20,7 @@ export async function getVenues(): Promise<Venue[]> {
 
 export async function updateVenue(req: Request): Promise<Venue | null> {
   if (!req.params.id) throw badRequest('Missing Required param `id`');
-  let body: Partial<VenueAttributes> = req.body;
+  let body: Partial<InferAttributes<Venue>> = req.body;
   await Venue.update(body, { where: { id: req.params.id } });
   return await Venue.findOne({ where: { id: req.params.id } });
 }
